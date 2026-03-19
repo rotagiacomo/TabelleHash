@@ -1,54 +1,52 @@
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class TabellaHash{
-    private Lista lista;
+    @SuppressWarnings("rawtypes")
+    private LinkedList[] array;
 
-    public TabellaHash(){
-        lista = new Lista();
+    public TabellaHash(int dimensioneArr){
+        array = new LinkedList[dimensioneArr];
     }
 
-    public void aggiungi(String chiave, Comparable valore) {
-        lista.aggiungiInCoda(chiave, valore);
+    public void add(String key, String value){
+        int hashCode = hashCode(key);
+        int posizioneArr = hashCode % array.length;
+        if(array[posizioneArr] == null){
+            array[posizioneArr] = new LinkedList<Elemento>();
+            array[posizioneArr].add(new Elemento(key, value));
+        }else{
+            LinkedList lista = array[posizioneArr];
+            Iterator iterator = lista.iterator();
+            while (iterator.hasNext()) {
+                Elemento elemento = (Elemento) iterator.next();
+                if (elemento.getKey() == key) {
+                    elemento.setValue(value);
+                    return;
+                }
+            }
+            lista.add(new Elemento(key, value));
+        }
     }
 
-    public Comparable cerca(String chiave) {
-        Iteratore iteratore = lista.getIteratore();
-        while (iteratore != null) {
-            Nodo nodo = iteratore.next();
-            if(nodo.getChiave().equals(chiave)){
-                return nodo.getContenuto();
+    private int hashCode(String key){
+        int hashCode = 0;
+        for(int i=0; i<key.length(); i++){
+            char c = key.charAt(i);
+            hashCode += (int) c;
+        }
+        return hashCode;
+    }
+
+    public String toString(){
+        String string = "";
+        for(int i=0; i<array.length; i++){
+            if(array[i] == null){
+                string += "\n";
+            }else{
+                string += array[i] + "\n";
             }
         }
-        return null;
+        return string;
     }
-
-    public void elimina(String chiave) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'elimina'");
-    }
-
-    public void modifica(String chiave, Comparable nuovoValore) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'modifica'");
-    }
-
-    public int contaChiavi() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contaChiavi'");
-    }
-
-    public String[] mostraChiavi() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'mostraChiavi'");
-    }
-
-    public int numeroCollisioni(String chiave) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'numeroCollisioni'");
-    }
-    
-    public String toString(){
-        return lista.toString();
-    }
-    
 }
